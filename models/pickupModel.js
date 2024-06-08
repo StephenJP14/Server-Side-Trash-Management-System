@@ -4,11 +4,13 @@ import db from "../config/Database.js";
 const {DataTypes} = Sequelize;
 
 // Defining the structure of the table
-const table_name = "pickup_request";
+const table_name = "TrashRecords";
 const Pickup = db.define(table_name, {
-    trash: DataTypes.STRING,
     qty: DataTypes.INTEGER,
-    time_stamp: DataTypes.DATE
+    trashType: DataTypes.STRING,
+    trashDetail: DataTypes.STRING,
+    userId: DataTypes.STRING,
+    location: DataTypes.JSON
 },{
     freezeTableName: true
 });
