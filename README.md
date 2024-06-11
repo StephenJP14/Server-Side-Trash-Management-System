@@ -18,7 +18,7 @@ This is an Express.js API that connects to a MySQL database.
       ```sh
       node index.js
       ```
-    or use
+    for debugging use
      ```sh
       nodemon index
     ```
