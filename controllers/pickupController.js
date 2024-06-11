@@ -1,9 +1,18 @@
-import Pickup from "../models/pickupModel.js";
+import Pickup from "../models/dbModel.js";
 
 export const getPickup = async (req, res) => {
     try {
-        const response = await Pickup.findAll();
-        res.status(200).json(response);
+        if (req.query.status) {
+            const response = await Pickup.findAll({
+                where: {
+                    status: req.query.status
+                }
+            });
+            res.status(200).json(response);
+        }else{
+            const response = await Pickup.findAll();
+            res.status(200).json(response);
+        }
     } catch (error) {
         console.log(error.message);
     }
@@ -26,6 +35,19 @@ export const createPickup = async (req, res) => {
     try {
         const response = await Pickup.create(req.body);
         res.status(201).json(response);
+    } catch (error) {
+        console.log(error.message);
+    }
+};
+
+export const updatePickup = async (req, res) => {
+    try {
+        const response = await Pickup.update(req.body, {
+            where: {
+                id: req.params.id
+            }
+        });
+        res.status(200).json(true);
     } catch (error) {
         console.log(error.message);
     }
