@@ -1,20 +1,14 @@
 import requests
 import json
 
-url = "https://backendtrash-production.up.railway.app/requestpickup"
+url = "http://localhost:3000/login"
 headers = {
     "Content-Type": "application/json"
 }
 
 data = {
-    "qty": 15,
-    "trashType": "Plastic",
-    "trashDetail": "Coke Bottle",
-    "userId": "5f9b1b3b1f1b1b1b1b1b1b1b",
-    "location": {
-        "latitude": 37.78825,
-        "longitude": -122.4324
-    }
+    "email": "depran80@gmail.com",
+    "password": "123456"
 }
 
 response = requests.post(url, headers=headers, data=json.dumps(data))

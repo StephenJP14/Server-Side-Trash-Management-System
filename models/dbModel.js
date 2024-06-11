@@ -4,8 +4,8 @@ import db from "../config/Database.js";
 const {DataTypes} = Sequelize;
 
 // Defining the structure of the table
-const table_name = "pickupRecords";
-const Pickup = db.define(table_name, {
+const pickup_name = "pickupRecords";
+export const Pickup = db.define(pickup_name, {
     qty: DataTypes.INTEGER,
     trashType: DataTypes.STRING,
     trashDetail: DataTypes.STRING,
@@ -16,7 +16,15 @@ const Pickup = db.define(table_name, {
     freezeTableName: true
 });
 
-export default Pickup;
+const user_table = "userRecords";
+export const User = db.define(user_table, {
+    name: DataTypes.STRING,
+    email: DataTypes.STRING,
+    password: DataTypes.STRING
+},{
+    freezeTableName: true
+});
+
 
 // Create & run a function to create the table in the database
 // if it does not exist
