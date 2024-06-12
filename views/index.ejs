@@ -50,9 +50,8 @@
 
 </body>
 <script>
-    const url_address = process.env.url_address || 3000;
     $.ajax({
-        url: `${url_address}/trashstock`,
+        url: `https://backendtrash-production.up.railway.app/trashstock`,
         type: 'GET',
         success: function (data) {
             console.log(data);
