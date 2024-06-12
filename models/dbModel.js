@@ -25,6 +25,15 @@ export const User = db.define(user_table, {
     freezeTableName: true
 });
 
+const trashRecord = "trashStock";
+export const Trash = db.define(trashRecord, {
+    trashDetail: DataTypes.STRING,
+    trashType: DataTypes.STRING,
+    qty: DataTypes.INTEGER
+},{
+    freezeTableName: true
+});
+
 
 // Create & run a function to create the table in the database
 // if it does not exist

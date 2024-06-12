@@ -4,7 +4,8 @@ import {getPickup,
     createPickup,
     updatePickup, 
     insertNewUser,
-    authenticateUser
+    authenticateUser,
+    getTrashStock
 } from "../controllers/pickupController.js";
 
 // Route for the pickup requests 
@@ -15,5 +16,6 @@ router.post("/requestpickup", createPickup);
 router.put("/updatepickup/:id", updatePickup);
 router.put("/register", insertNewUser);
 router.post("/login", authenticateUser);
+router.get("/trashstock", getTrashStock);
 
 export default router;
