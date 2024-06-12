@@ -66,26 +66,25 @@
 
 </body>
 <script>
-    // $.ajax({
-    //     url: `https://backendtrash-production.up.railway.app/trashstock`,
-    //     type: 'GET',
-    //     success: function (data) {
-    //         console.log(data);
-    //         data.forEach(element => {
-    //             $('#table-body').append(`
-    //                     <tr>
-    //                         <td>${element.trashDetail}</td>
-    //                         <td>${element.trashType}</td>
-    //                         <td>${element.qty}</td>
-    //                     </tr>
-    //                 `);
-    //         });
-    //     }
-    // });
+    $.ajax({
+        url: `https://backendtrash-production.up.railway.app/trashstock`,
+        type: 'GET',
+        success: function (data) {
+            console.log(data);
+            data.forEach(element => {
+                $('#table-body').append(`
+                        <tr>
+                            <td>${element.trashDetail}</td>
+                            <td>${element.trashType}</td>
+                            <td>${element.qty}</td>
+                        </tr>
+                    `);
+            });
+        }
+    });
 
     $.ajax({
-        // https://backendtrash-production.up.railway.app/pickuprequest
-        url: `http://localhost:3000/availablepickup`,
+        url: `https://backendtrash-production.up.railway.app/availablepickup`,
         type: 'GET',
         success: function (data) {
             console.log(data);
