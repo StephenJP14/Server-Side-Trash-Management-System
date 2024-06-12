@@ -129,7 +129,7 @@ export const insertNewUser = async (req, res) => {
     try {
         req.body.password = createHash('sha256').update(req.body.password).digest('hex');
         const response = await User.create(req.body);
-        res.status(201).json(response);
+        res.status(201).json(true);
     } catch (error) {
         console.log(error.message);
     }
@@ -145,7 +145,7 @@ export const authenticateUser = async (req, res) => {
             }
         });
         if (response) {
-            res.status(200).json(response);
+            res.status(200).json(true);
         } else {
             res.status(404).json(false);
         }

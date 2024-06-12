@@ -30,7 +30,7 @@
         background-color: #f2f2f2;
     }
 
-    
+
 </style>
 
 <body>
@@ -50,8 +50,9 @@
 
 </body>
 <script>
+    const url_address = process.env.url_address || 3000;
     $.ajax({
-        url: 'http://localhost:3000/trashstock',
+        url: `${url_address}/trashstock`,
         type: 'GET',
         success: function (data) {
             console.log(data);
