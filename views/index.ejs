@@ -84,7 +84,7 @@
     });
 
     $.ajax({
-        url: `https://backendtrash-production.up.railway.app/availablepickup`,
+        url: `https://backendtrash-production.up.railway.app/pickup?status=Available`,
         type: 'GET',
         success: function (data) {
             console.log(data);

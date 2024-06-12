@@ -44,19 +44,6 @@ export const getPickupById = async (req, res) => {
     }
 };
 
-export const getAvailablePickup = async (req, res) => {
-    try {
-        const response = await Pickup.findAll({
-            where: {
-                status: "Available"
-            }
-        });
-        res.status(200).json(response);
-    } catch (error) {
-        console.log(error.message);
-    }
-};
-
 export const createPickup = async (req, res) => {
     try {
         const response = await Pickup.create(req.body);
