@@ -5,15 +5,13 @@ import {getPickup,
     updatePickup, 
     insertNewUser,
     authenticateUser,
-    getTrashStock,
-    getAvailablePickup
+    getTrashStock
 } from "../controllers/pickupController.js";
 
 // Route for the pickup requests 
 const router = express.Router();
 router.get("/pickup", getPickup);
 router.get("/pickup/:id", getPickupById);
-router.get("/availablepickup", getAvailablePickup);
 router.post("/requestpickup", createPickup);
 router.put("/updatepickup/:id", updatePickup);
 router.put("/register", insertNewUser);
