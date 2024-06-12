@@ -1,3 +1,4 @@
+import exp from "constants";
 import { Pickup, User, Trash } from "../models/dbModel.js";
 import { createHash } from 'crypto';
 import { Sequelize } from "sequelize"; 
@@ -38,6 +39,19 @@ export const getPickupById = async (req, res) => {
             });
             res.status(200).json(response);
         }
+    } catch (error) {
+        console.log(error.message);
+    }
+};
+
+export const getAvailablePickup = async (req, res) => {
+    try {
+        const response = await Pickup.findAll({
+            where: {
+                status: "Available"
+            }
+        });
+        res.status(200).json(response);
     } catch (error) {
         console.log(error.message);
     }

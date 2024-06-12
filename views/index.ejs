@@ -9,6 +9,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <style>
+    body{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 50px;
+    }
     table {
         width: 100%;
         border-collapse: collapse;
@@ -46,21 +53,50 @@
         <tbody id="table-body">
         </tbody>
     </table>
+    <table id="pickupRequest">
+        <tr>
+            <th>User Id</th>
+            <th>Trash Name</th>
+            <th>Trash Type</th>
+            <th>Quantity</th>
+            <th>Location</th>
+        </tr>
+    </table>
     <div id="myPlot" style="width:100%;max-width:700px"></div>
 
 </body>
 <script>
+    // $.ajax({
+    //     url: `https://backendtrash-production.up.railway.app/trashstock`,
+    //     type: 'GET',
+    //     success: function (data) {
+    //         console.log(data);
+    //         data.forEach(element => {
+    //             $('#table-body').append(`
+    //                     <tr>
+    //                         <td>${element.trashDetail}</td>
+    //                         <td>${element.trashType}</td>
+    //                         <td>${element.qty}</td>
+    //                     </tr>
+    //                 `);
+    //         });
+    //     }
+    // });
+
     $.ajax({
-        url: `https://backendtrash-production.up.railway.app/trashstock`,
+        // https://backendtrash-production.up.railway.app/pickuprequest
+        url: `http://localhost:3000/availablepickup`,
         type: 'GET',
         success: function (data) {
             console.log(data);
             data.forEach(element => {
-                $('#table-body').append(`
+                $('#pickupRequest').append(`
                         <tr>
+                            <td>${element.userId}</td>
                             <td>${element.trashDetail}</td>
                             <td>${element.trashType}</td>
                             <td>${element.qty}</td>
+                            <td>${JSON.stringify(element.location)}</td>
                         </tr>
                     `);
             });
