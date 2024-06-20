@@ -199,34 +199,34 @@ export const getUserHistory = async (req, res) => {
         if (dateFilter){
             if (dateFilter.filter === "week") {
                 let currentDate = new Date();
-                let dateFilter = new Date(currentDate - 7 * 24 * 60 * 60 * 1000);
-                dateFilter.setSeconds(0)
-                dateFilter.setMinutes(0)
-                dateFilter.setHours(0)
-                console.log(dateFilter);
+                var previousFilter = new Date(currentDate - 7 * 24 * 60 * 60 * 1000);
+                previousFilter.setSeconds(0)
+                previousFilter.setMinutes(0)
+                previousFilter.setHours(0)
+                console.log(previousFilter);
             }
     
             if (dateFilter.filter === "month") {
                 let currentDate = new Date();
-                let dateFilter = new Date(currentDate - 30 * 24 * 60 * 60 * 1000);
-                dateFilter.setSeconds(0)
-                dateFilter.setMinutes(0)
-                dateFilter.setHours(0)
+                var previousFilter = new Date(currentDate - 30 * 24 * 60 * 60 * 1000);
+                previousFilter.setSeconds(0)
+                previousFilter.setMinutes(0)
+                previousFilter.setHours(0)
             }
     
             if (dateFilter.filter === "year") {
                 let currentDate = new Date();
-                let dateFilter = new Date(currentDate - 365 * 24 * 60 * 60 * 1000);
-                dateFilter.setSeconds(0)
-                dateFilter.setMinutes(0)
-                dateFilter.setHours(0)
+                var previousFilter = new Date(currentDate - 365 * 24 * 60 * 60 * 1000);
+                previousFilter.setSeconds(0)
+                previousFilter.setMinutes(0)
+                previousFilter.setHours(0)
             }
-            console.log(dateFilter);
+            console.log(previousFilter);
             const response = await Pickup.findAll({
                 where: {
                     userId: req.query.userId,
                     createdAt: {
-                        [Sequelize.Op.gte]: dateFilter
+                        [Sequelize.Op.gte]: previousFilter
                     }
                 }
             });
