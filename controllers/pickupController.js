@@ -200,26 +200,26 @@ export const getUserHistory = async (req, res) => {
             if (dateFilter.filter === "week") {
                 let currentDate = new Date();
                 var previousFilter = new Date(currentDate - 7 * 24 * 60 * 60 * 1000);
-                previousFilter.setSeconds(0)
-                previousFilter.setMinutes(0)
                 previousFilter.setHours(0)
+                previousFilter.setMinutes(0)
+                previousFilter.setSeconds(0)
                 console.log(previousFilter);
             }
     
             if (dateFilter.filter === "month") {
                 let currentDate = new Date();
                 var previousFilter = new Date(currentDate - 30 * 24 * 60 * 60 * 1000);
-                previousFilter.setSeconds(0)
-                previousFilter.setMinutes(0)
                 previousFilter.setHours(0)
+                previousFilter.setMinutes(0)
+                previousFilter.setSeconds(0)
             }
     
             if (dateFilter.filter === "year") {
                 let currentDate = new Date();
                 var previousFilter = new Date(currentDate - 365 * 24 * 60 * 60 * 1000);
-                previousFilter.setSeconds(0)
-                previousFilter.setMinutes(0)
                 previousFilter.setHours(0)
+                previousFilter.setMinutes(0)
+                previousFilter.setSeconds(0)
             }
             console.log(previousFilter);
             const response = await Pickup.findAll({
