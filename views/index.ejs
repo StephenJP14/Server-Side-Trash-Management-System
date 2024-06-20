@@ -43,23 +43,29 @@
 <body>
     <h1>Halo Boss</h1>
     <table>
+        <h4>Tabel Stock Sampah</h4>
         <thead>
             <tr>
                 <th>Trash Name</th>
                 <th>Trash Type</th>
+                <th>Trash Price (per Kg)</th>
                 <th>Stock</th>
             </tr>
         </thead>
         <tbody id="table-body">
         </tbody>
     </table>
+
     <table id="pickupRequest">
+        <h4>Tabel Request Pickup</h4>
         <tr>
             <th>User Id</th>
             <th>Trash Name</th>
             <th>Trash Type</th>
             <th>Quantity</th>
             <th>Location</th>
+            <th>Trash Price (per Kg)</th>
+            <th>Total Reward</th>
         </tr>
     </table>
     <div id="myPlot" style="width:100%;max-width:700px"></div>
@@ -67,7 +73,8 @@
 </body>
 <script>
     $.ajax({
-        url: `https://backendtrash-production.up.railway.app/trashstock`,
+        url: `http://localhost:3000/trashstock`,
+        // url: `https://backendtrash-production.up.railway.app/trashstock`,
         type: 'GET',
         success: function (data) {
             console.log(data);
@@ -76,6 +83,7 @@
                         <tr>
                             <td>${element.trashDetail}</td>
                             <td>${element.trashType}</td>
+                            <td>${element.trashPrice}</td>
                             <td>${element.qty}</td>
                         </tr>
                     `);
@@ -84,7 +92,9 @@
     });
 
     $.ajax({
-        url: `https://backendtrash-production.up.railway.app/pickup?status=Available`,
+        // url: `http://localhost:3000/pickup?status=Available`,
+        url: `http://localhost:3000/pickup`,
+        // url: `https://backendtrash-production.up.railway.app/pickup?status=Available`,
         type: 'GET',
         success: function (data) {
             console.log(data);
@@ -96,6 +106,8 @@
                             <td>${element.trashType}</td>
                             <td>${element.qty}</td>
                             <td>${JSON.stringify(element.location)}</td>
+                            <td>${element.trashPrice}</td>
+                            <td>${element.totalReward}</td>
                         </tr>
                     `);
             });

@@ -3,23 +3,43 @@ import { Pickup, User, Trash } from "../models/dbModel.js";
 import { createHash } from 'crypto';
 import { Sequelize } from "sequelize"; 
 
+// Pickup controller
 export const getPickup = async (req, res) => {
     try {
-        if (req.query.status) {
-            const response = await Pickup.findAll({
+        const statusFilter = req.query.status ? { status: req.query.status } : {};
+
+        const pickup = await Pickup.findAll({
+            where: statusFilter
+        });
+
+        const response = await Promise.all(pickup.map(async (element) => {
+            const trash = await Trash.findOne({
                 where: {
-                    status: req.query.status
+                    trashDetail: element.trashDetail,
+                    trashType: element.trashType
                 }
             });
-            res.status(200).json(response);
-        } else {
-            const response = await Pickup.findAll();
-            res.status(200).json(response);
-        }
+
+            return {
+                id: element.id,
+                qty: element.qty,
+                trashDetail: element.trashDetail,
+                trashType: element.trashType,
+                userId: element.userId,
+                location: element.location,
+                status: element.status,
+                trashPrice: trash.trashPrice,
+                totalReward: element.qty * trash.trashPrice
+            };
+        }));
+
+        res.status(200).json(response);
     } catch (error) {
-        console.log(error.message);
+        console.error('Error fetching data:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 };
+
 
 export const getPickupById = async (req, res) => {
     try {
@@ -125,7 +145,22 @@ export const updatePickup = async (req, res) => {
     }
 };
 
+export const getTrashStock = async (req, res) => {
+    try {
+        const response = await Trash.findAll();
+        if (response.length === 0) {
+            const empty_response = [{"trashDetail": "No Trash Available", "trashType" : "NaN", "qty" : 0}];
+            res.status(200).json(empty_response);
+        }else{
+            res.status(200).json(response);
+        }
+    } catch (error) {
+        console.log(error.message);
+    }
+};
 
+
+// User Controller
 export const insertNewUser = async (req, res) => {
     try {
         req.body.password = createHash('sha256').update(req.body.password).digest('hex');
@@ -155,16 +190,62 @@ export const authenticateUser = async (req, res) => {
     }
 };
 
-export const getTrashStock = async (req, res) => {
-    try {
-        const response = await Trash.findAll();
-        if (response.length === 0) {
-            const empty_response = [{"trashDetail": "No Trash Available", "trashType" : "NaN", "qty" : 0}];
-            res.status(200).json(empty_response);
+
+export const getUserHistory = async (req, res) => {
+    try{
+
+        const dateFilter = req.query.datefilter ? { filter: req.query.datefilter } : false;
+
+        if (dateFilter){
+            if (dateFilter.filter === "week") {
+                let currentDate = new Date();
+                let dateFilter = new Date(currentDate - 7 * 24 * 60 * 60 * 1000);
+                dateFilter.setSeconds(0)
+                dateFilter.setMinutes(0)
+                dateFilter.setHours(0)
+                console.log(dateFilter);
+            }
+    
+            if (dateFilter.filter === "month") {
+                let currentDate = new Date();
+                let dateFilter = new Date(currentDate - 30 * 24 * 60 * 60 * 1000);
+                dateFilter.setSeconds(0)
+                dateFilter.setMinutes(0)
+                dateFilter.setHours(0)
+            }
+    
+            if (dateFilter.filter === "year") {
+                let currentDate = new Date();
+                let dateFilter = new Date(currentDate - 365 * 24 * 60 * 60 * 1000);
+                dateFilter.setSeconds(0)
+                dateFilter.setMinutes(0)
+                dateFilter.setHours(0)
+            }
+            console.log(dateFilter);
+            const response = await Pickup.findAll({
+                where: {
+                    userId: req.query.userId,
+                    createdAt: {
+                        [Sequelize.Op.gte]: dateFilter
+                    }
+                }
+            });
+            res.status(200).json(response);
         }else{
+            console.log("No date filter"); 
+            const response = await Pickup.findAll({
+                where: {
+                    userId: req.query.userId
+                }
+            });
             res.status(200).json(response);
         }
-    } catch (error) {
+
+
+
+    }catch (error){
         console.log(error.message);
     }
+
 };
+

@@ -7,8 +7,8 @@ const {DataTypes} = Sequelize;
 const pickup_name = "pickupRecords";
 export const Pickup = db.define(pickup_name, {
     qty: DataTypes.INTEGER,
-    trashType: DataTypes.STRING,
     trashDetail: DataTypes.STRING,
+    trashType: DataTypes.STRING,
     userId: DataTypes.STRING,
     location: DataTypes.JSON,
     status: DataTypes.STRING
@@ -29,6 +29,7 @@ const trashRecord = "trashStock";
 export const Trash = db.define(trashRecord, {
     trashDetail: DataTypes.STRING,
     trashType: DataTypes.STRING,
+    trashPrice: DataTypes.INTEGER,
     qty: DataTypes.INTEGER
 },{
     freezeTableName: true
