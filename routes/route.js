@@ -1,6 +1,6 @@
 import express from "express";
-import {getPickup, 
-    getPickupByPickupId,
+import {
+    getPickup,
     createPickup,
     updatePickup, 
     insertNewUser,
@@ -13,7 +13,6 @@ const router = express.Router();
 
 // Route for the pickup requests 
 router.get("/pickup", getPickup);
-router.get("/pickup/:id", getPickupByPickupId);
 router.post("/requestpickup", createPickup);
 router.put("/updatepickup/:id", updatePickup);
 
