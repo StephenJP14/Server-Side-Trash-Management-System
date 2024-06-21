@@ -40,13 +40,12 @@ export const getPickup = async (req, res) => {
     }
 };
 
-
-export const getPickupById = async (req, res) => {
+export const getPickupByPickupId = async (req, res) => {
     try {
         if (req.query.status) {
             const response = await Pickup.findAll({
                 where: {
-                    userId: req.params.id,
+                    id: req.params.id,
                     status: req.query.status
                 }
             });
@@ -54,7 +53,7 @@ export const getPickupById = async (req, res) => {
         } else {
             const response = await Pickup.findOne({
                 where: {
-                    userId: req.params.id
+                    id: req.params.id
                 }
             });
             res.status(200).json(response);
@@ -63,6 +62,7 @@ export const getPickupById = async (req, res) => {
         console.log(error.message);
     }
 };
+
 
 export const createPickup = async (req, res) => {
     try {
@@ -193,53 +193,102 @@ export const authenticateUser = async (req, res) => {
 
 export const getUserHistory = async (req, res) => {
     try{
-
         const dateFilter = req.query.datefilter ? { filter: req.query.datefilter } : false;
 
-        if (dateFilter){
-            if (dateFilter.filter === "week") {
-                let currentDate = new Date();
-                var previousFilter = new Date(currentDate - 7 * 24 * 60 * 60 * 1000);
-                previousFilter.setHours(0)
-                previousFilter.setMinutes(0)
-                previousFilter.setSeconds(0)
-                console.log(previousFilter);
-            }
-    
-            if (dateFilter.filter === "month") {
-                let currentDate = new Date();
-                var previousFilter = new Date(currentDate - 30 * 24 * 60 * 60 * 1000);
-                previousFilter.setHours(0)
-                previousFilter.setMinutes(0)
-                previousFilter.setSeconds(0)
-            }
-    
-            if (dateFilter.filter === "year") {
-                let currentDate = new Date();
-                var previousFilter = new Date(currentDate - 365 * 24 * 60 * 60 * 1000);
-                previousFilter.setHours(0)
-                previousFilter.setMinutes(0)
-                previousFilter.setSeconds(0)
-            }
-            console.log(previousFilter);
-            const response = await Pickup.findAll({
-                where: {
-                    userId: req.query.userId,
-                    createdAt: {
-                        [Sequelize.Op.gte]: previousFilter
+        if (req.query.status) {
+            if (dateFilter){
+                if (dateFilter.filter === "week") {
+                    let currentDate = new Date();
+                    var previousFilter = new Date(currentDate - 7 * 24 * 60 * 60 * 1000);
+                    previousFilter.setHours(0)
+                    previousFilter.setMinutes(0)
+                    previousFilter.setSeconds(0)
+                    console.log(previousFilter);
+                }
+        
+                if (dateFilter.filter === "month") {
+                    let currentDate = new Date();
+                    var previousFilter = new Date(currentDate - 30 * 24 * 60 * 60 * 1000);
+                    previousFilter.setHours(0)
+                    previousFilter.setMinutes(0)
+                    previousFilter.setSeconds(0)
+                }
+        
+                if (dateFilter.filter === "year") {
+                    let currentDate = new Date();
+                    var previousFilter = new Date(currentDate - 365 * 24 * 60 * 60 * 1000);
+                    previousFilter.setHours(0)
+                    previousFilter.setMinutes(0)
+                    previousFilter.setSeconds(0)
+                }
+
+                const response = await Pickup.findAll({
+                    where: {
+                        userId: req.query.id,
+                        status: req.query.status,
+                        createdAt: {
+                            [Sequelize.Op.gte]: previousFilter
+                        }
                     }
+                });
+                res.status(200).json(response);
+            }else{
+                console.log("No date filter"); 
+                const response = await Pickup.findAll({
+                    where: {
+                        userId: req.query.id,
+                        status: req.query.status
+                    }
+                });
+                res.status(200).json(response);
+            }
+        } else {
+            if (dateFilter){
+                if (dateFilter.filter === "week") {
+                    let currentDate = new Date();
+                    var previousFilter = new Date(currentDate - 7 * 24 * 60 * 60 * 1000);
+                    previousFilter.setHours(0)
+                    previousFilter.setMinutes(0)
+                    previousFilter.setSeconds(0)
+                    console.log(previousFilter);
                 }
-            });
-            res.status(200).json(response);
-        }else{
-            console.log("No date filter"); 
-            const response = await Pickup.findAll({
-                where: {
-                    userId: req.query.userId
+        
+                if (dateFilter.filter === "month") {
+                    let currentDate = new Date();
+                    var previousFilter = new Date(currentDate - 30 * 24 * 60 * 60 * 1000);
+                    previousFilter.setHours(0)
+                    previousFilter.setMinutes(0)
+                    previousFilter.setSeconds(0)
                 }
-            });
-            res.status(200).json(response);
+        
+                if (dateFilter.filter === "year") {
+                    let currentDate = new Date();
+                    var previousFilter = new Date(currentDate - 365 * 24 * 60 * 60 * 1000);
+                    previousFilter.setHours(0)
+                    previousFilter.setMinutes(0)
+                    previousFilter.setSeconds(0)
+                }
+                console.log(previousFilter);
+                const response = await Pickup.findAll({
+                    where: {
+                        userId: req.query.id,
+                        createdAt: {
+                            [Sequelize.Op.gte]: previousFilter
+                        }
+                    }
+                });
+                res.status(200).json(response);
+            }else{
+                console.log("No date filter"); 
+                const response = await Pickup.findAll({
+                    where: {
+                        userId: req.query.id
+                    }
+                });
+                res.status(200).json(response);
+            }    
         }
+
 
 
 

@@ -1,6 +1,6 @@
 import express from "express";
 import {getPickup, 
-    getPickupById,
+    getPickupByPickupId,
     createPickup,
     updatePickup, 
     insertNewUser,
@@ -9,12 +9,15 @@ import {getPickup,
     getUserHistory
 } from "../controllers/pickupController.js";
 
-// Route for the pickup requests 
 const router = express.Router();
+
+// Route for the pickup requests 
 router.get("/pickup", getPickup);
-router.get("/pickup/:id", getPickupById);
+router.get("/pickup/:id", getPickupByPickupId);
 router.post("/requestpickup", createPickup);
 router.put("/updatepickup/:id", updatePickup);
+
+// Route for the user requests
 router.put("/register", insertNewUser);
 router.post("/login", authenticateUser);
 router.get("/trashstock", getTrashStock);
