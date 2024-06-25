@@ -1,6 +1,8 @@
 import { Sequelize } from "sequelize";
 import { Pickup, User, Food } from "../models/dbModel.js";
 import moment from 'moment';
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
 
 export const updateUserSetting = async (req, res) => {
     try {
@@ -129,7 +131,26 @@ export const getRecommendation = async (req, res) => {
             }
         });
 
-        res.status(200).json(response);
+        let allFood = [];
+
+        response.forEach(trash => {
+            allFood.push(trash.trashDetail);
+        });
+
+        if (allFood.length === 0) {
+            res.status(200).json({
+                message: "No food available"
+            });
+            return;
+        }
+        const genAi = new GoogleGenerativeAI("AIzaSyAf8Y1DjPsfJH-lP9JhqhbIE-VvNGhdIG0");
+        const model = genAi.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const result = await model.generateContent(`Anggap anda adalah sebuah sistem yang hanya akan mengembalikan perintah dalam format raw tepat seperti ini tanpa menambahkan apapun [{'nama makanan': 'nama makanan', 'deskripsi': 'desc','bahan': ['2 telur', 'tepung 500gram', 'gula 1kg'],'langkah': ['Step 1: ambil telur', 'Step 2: ambil tepung']}, {'nama makanan': 'nama makanan', 'deskripsi': 'desc','bahan': ['2 telur', 'tepung 500gram', 'gula 1kg'],'langkah': ['Step 1: ambil telur', 'Step 2: ambil tepung']}, {'nama makanan': 'nama makanan', 'deskripsi': 'desc','bahan': ['2 telur', 'tepung 500gram', 'gula 1kg'],'langkah': ['Step 1: ambil telur', 'Step 2: ambil tepung']}].  Berikan saya 3 rekomendasi yang bisa dibuat dengan bahan ${allFood}.`);
+        const answer = result.response.text();
+        const finalAnwers = eval(answer);
+
+
+        res.status(200).json(finalAnwers);
     } catch (error) {
         res.status(500).json({
             message: "Internal server error",
@@ -137,3 +158,5 @@ export const getRecommendation = async (req, res) => {
         });
     }
 };
+
+// let a = 
