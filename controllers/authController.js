@@ -14,6 +14,16 @@ export const insertNewUser = async (req, res) => {
 
         const roles = ["user", "driver", "admin"];
 
+        if(req.body.role == "driver"){
+            if(!req.body.currentRole){
+                res.status(400).json({
+                    message: "Contact admin to register as driver"
+                });
+                return;
+            }
+
+        }
+
         if (!roles.includes(req.body.role)) {
             res.status(400).json({
                 message: "Invalid role"
