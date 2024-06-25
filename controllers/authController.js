@@ -42,11 +42,19 @@ export const insertNewUser = async (req, res) => {
                     message: "Email already exists"
                 });
             }else{
-                const response = await User.create(req.body);
-                res.status(201).json({
-                    message: "User created"
+                let response = await User.create(req.body);
+                response = {
+                    "user" : {
+                        "id": response.id,
+                        "name": response.name,
+                        "email": response.email,
+                        "createdAt": response.createdAt,
+                        "updatedAt": response.updatedAt
+                    },
+                    "userRole": response.role
                 }
-                );
+                    
+                res.status(201).json(response);
             }
         }
 
@@ -62,13 +70,23 @@ export const insertNewUser = async (req, res) => {
 export const authenticateUser = async (req, res) => {
     try {
         req.body.password = createHash('sha256').update(req.body.password).digest('hex');
-        const response = await User.findOne({
+        let response = await User.findOne({
             where: {
                 email: req.body.email,
                 password: req.body.password
             }
         });
         if (response) {
+            response = {
+                "user" : {
+                    "id": response.id,
+                    "name": response.name,
+                    "email": response.email,
+                    "createdAt": response.createdAt,
+                    "updatedAt": response.updatedAt
+                },
+                "userRole": response.role
+            }
             res.status(200).json(response);
         } else {
             res.status(404).json({

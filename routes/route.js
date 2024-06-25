@@ -22,7 +22,7 @@ router.put("/updatepickup/:id", updatePickup); // Driver
 router.get("/trashstock", getTrashStock); // Admin
 
 // Route for the user requests
-router.put("/register", insertNewUser); // User
+router.post("/register", insertNewUser); // User
 router.post("/login", authenticateUser); // User
 router.get("/history", getUserHistory); // User
 
