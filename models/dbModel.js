@@ -20,7 +20,8 @@ const user_table = "userRecords";
 export const User = db.define(user_table, {
     name: DataTypes.STRING,
     email: DataTypes.STRING,
-    password: DataTypes.STRING
+    password: DataTypes.STRING,
+    role : DataTypes.STRING
 },{
     freezeTableName: true
 });
@@ -34,6 +35,19 @@ export const Trash = db.define(trashRecord, {
 },{
     freezeTableName: true
 });
+
+const foodRecord = "foodStock";
+export const Food = db.define(foodRecord, {
+    userId: DataTypes.STRING,
+    trashDetail: DataTypes.STRING,
+    trashType: DataTypes.STRING,
+    expiryDate: DataTypes.DATE,
+    qty: DataTypes.INTEGER,
+    status: DataTypes.STRING
+},{
+    freezeTableName: true
+});
+
 
 
 // Create & run a function to create the table in the database

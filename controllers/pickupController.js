@@ -1,47 +1,11 @@
-import exp from "constants";
 import { Pickup, User, Trash } from "../models/dbModel.js";
-import { createHash } from 'crypto';
 import { Sequelize } from "sequelize"; 
 
-// Pickup controller
-// export const getPickup = async (req, res) => {
-//     try {
-//         const statusFilter = req.query.status ? { status: req.query.status } : {};
-
-//         const pickup = await Pickup.findAll({
-//             where: statusFilter
-//         });
-
-//         const response = await Promise.all(pickup.map(async (element) => {
-//             const trash = await Trash.findOne({
-//                 where: {
-//                     trashDetail: element.trashDetail,
-//                     trashType: element.trashType
-//                 }
-//             });
-
-//             return {
-//                 id: element.id,
-//                 qty: element.qty,
-//                 trashDetail: element.trashDetail,
-//                 trashType: element.trashType,
-//                 userId: element.userId,
-//                 location: element.location,
-//                 status: element.status,
-//                 trashPrice: trash.trashPrice,
-//                 totalReward: element.qty * trash.trashPrice
-//             };
-//         }));
-
-//         res.status(200).json(response);
-//     } catch (error) {
-//         console.error('Error fetching data:', error);
-//         res.status(500).json({ error: 'Internal server error' });
-//     }
-// };
 
 export const getPickup = async (req, res) => {
     try {
+
+    
 
         if (req.query.status) {
             if(req.query.id){
@@ -78,7 +42,10 @@ export const getPickup = async (req, res) => {
 export const createPickup = async (req, res) => {
     try {
         const response = await Pickup.create(req.body);
-        res.status(201).json(response);
+        res.status(201).json({
+            id: response.id,
+            message: "Pickup created"
+        });
     } catch (error) {
         console.log(error.message);
     }
@@ -171,36 +138,6 @@ export const getTrashStock = async (req, res) => {
 };
 
 
-// User Controller
-export const insertNewUser = async (req, res) => {
-    try {
-        req.body.password = createHash('sha256').update(req.body.password).digest('hex');
-        const response = await User.create(req.body);
-        res.status(201).json(true);
-    } catch (error) {
-        console.log(error.message);
-    }
-};
-
-export const authenticateUser = async (req, res) => {
-    try {
-        req.body.password = createHash('sha256').update(req.body.password).digest('hex');
-        const response = await User.findOne({
-            where: {
-                email: req.body.email,
-                password: req.body.password
-            }
-        });
-        if (response) {
-            res.status(200).json(true);
-        } else {
-            res.status(404).json(false);
-        }
-    } catch (error) {
-        console.log(error.message);
-    }
-};
-
 const getPreviousDate = (filter) => {
     let currentDate = new Date();
     let previousDate;
@@ -240,7 +177,7 @@ export const getUserHistory = async (req, res) => {
 
         if (datefilter) {
             const dateStart = getPreviousDate(datefilter);
-            if (previousFilter) {
+            if (dateStart) {
                 whereClause.createdAt = { [Sequelize.Op.gte]: dateStart };
             }
         }
