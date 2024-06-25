@@ -22,8 +22,8 @@ router.put("/updatepickup/:id", updatePickup); // Driver
 router.get("/trashstock", getTrashStock); // Admin
 
 // Route for the user requests
-router.post("/register", insertNewUser); // User
-router.post("/login", authenticateUser); // User
+router.post("/register", insertNewUser); // User, Admin
+router.post("/login", authenticateUser); // User, Admin, Driver
 router.get("/history", getUserHistory); // User
 
 router.put("/updatesetting/", updateUserSetting); // User

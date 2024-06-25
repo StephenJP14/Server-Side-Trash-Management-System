@@ -163,7 +163,7 @@ const getPreviousDate = (filter) => {
 
 export const getUserHistory = async (req, res) => {
     try {
-        const { id, datefilter, status } = req.query;
+        const { id, datefilter, status, trashType } = req.query;
         
         if (!id) {
             return res.status(400).json({ error: 'User ID is required' });
@@ -173,6 +173,10 @@ export const getUserHistory = async (req, res) => {
 
         if (status) {
             whereClause.status = status;
+        }
+
+        if (trashType) {
+            whereClause.trashType = trashType;
         }
 
         if (datefilter) {
@@ -211,4 +215,5 @@ export const getUserHistory = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
 

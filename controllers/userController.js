@@ -42,9 +42,9 @@ export const addNewFood = async (req, res) => {
 
 export const getFoodStock = async (req, res) => {
     try{
-        const status = ['Tersedia', 'Expired', 'Dibuang'] 
+        const foodStatus = ['Good', 'Expired', 'PickedUp'] 
         if(req.query.status){
-            if (status.includes(req.query.status)){
+            if (foodStatus.includes(req.query.status)){
                 const response = await Food.findAll({
                     where: {
                         status: req.query.status
@@ -53,7 +53,7 @@ export const getFoodStock = async (req, res) => {
                 res.status(200).json(response);
                 return;
             }
-            if (req.query.status === 'Semua'){
+            if (req.query.status === 'All'){
                 const response = await Food.findAll();
                 res.status(200).json(response);
                 return;
@@ -62,7 +62,7 @@ export const getFoodStock = async (req, res) => {
         const response = await Food.findAll({
             where: {
                 status: {
-                    [Sequelize.Op.or]: [status[0], status[1]]
+                    [Sequelize.Op.or]: [foodStatus[0], foodStatus[1]]
                 }
             }
         });
@@ -88,7 +88,7 @@ export const createFoodWastePickup = async (req, res) => {
         const response = await Pickup.create(req.body);
         
         Food.update({
-            status: 'Dibuang'
+            status: 'PickedUp'
         },{
             where: {
                 id: req.body.fid
