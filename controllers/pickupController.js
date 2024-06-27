@@ -4,25 +4,17 @@ import { Sequelize } from "sequelize";
 
 export const getPickup = async (req, res) => {
     try {
-
-    
-
-        if (req.query.status) {
-            if(req.query.id){
-                const response = await Pickup.findOne({
+        if (!req.query.id) {
+            if(req.query.status){
+                const response = await Pickup.findAll({
                     where: {
-                        id: req.query.id,
                         status: req.query.status
                     }
                 });
                 res.status(200).json(response);
             }
             else{
-                const response = await Pickup.findAll({
-                    where: {
-                        status: req.query.status
-                    }
-                });
+                const response = await Pickup.findAll();
                 res.status(200).json(response);
             }
         } else {
@@ -35,6 +27,10 @@ export const getPickup = async (req, res) => {
         }
     } catch (error) {
         console.log(error.message);
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message
+        });
     }
 };
 
@@ -107,7 +103,9 @@ export const updatePickup = async (req, res) => {
                 });
             }
 
-            res.status(200).json(true);
+            res.status(200).json({
+                message: "Pickup updated"
+            });
         } else {
             // Update the Pickup record for statuses other than "Complete"
             await Pickup.update(req.body, {
@@ -115,7 +113,10 @@ export const updatePickup = async (req, res) => {
                     id: req.params.id
                 }
             });
-            res.status(200).json(true);
+            res.status(200).json({
+                message: "Pickup updated"
+            
+            });
         }
     } catch (error) {
         console.log(error.message);

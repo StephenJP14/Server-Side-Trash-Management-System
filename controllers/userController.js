@@ -1,14 +1,55 @@
 import { Sequelize } from "sequelize";
-import { Pickup, User, Food } from "../models/dbModel.js";
+import { Pickup, User, MyItems } from "../models/dbModel.js";
+import { createHash } from 'crypto';
 import moment from 'moment';
 import { GoogleGenerativeAI } from "@google/generative-ai";
+
+export const getUserProfile = async (req, res) => {
+    try{
+        if(!req.params.userId){
+            res.status(400).json({
+                message: "User ID is required"
+            })
+            return;
+        }
+
+        let response = await User.findOne({
+            where: {
+                id: req.params.userId
+            }
+        });
+
+        response.password = "*".repeat(response.password.length);
+
+        res.status(200).json(response);
+
+    }catch(error){
+        console.log(error);
+        res.status(500).json({
+            message: "Internal Server error",
+            error: error
+        });
+    }
+}
 
 
 export const updateUserSetting = async (req, res) => {
     try {
-        const response = await User.update(req.body, {
+        if (!req.body.userId) {
+            res.status(400).json({
+                message: "User ID is required"
+            });
+            return;
+        }
+        let data = req.body;
+
+        if (req.body.password) {
+            data.password = createHash('sha256').update(req.body.password).digest('hex');
+        }
+
+        const response = await User.update(data, {
             where: {
-                id: req.body.id
+                id: data.userId
             }
         });
         res.status(200).json({
@@ -25,11 +66,58 @@ export const updateUserSetting = async (req, res) => {
 
 };
 
-export const addNewFood = async (req, res) => {
+const updateItemStatus = async () => {
     try{
-        const response = await Food.create(req.body);
+        const response = await MyItems.update({
+            status: "Expired"
+        }, {
+            where: {
+                expiryDate: { 
+                    [Sequelize.Op.ne]: null
+                },
+                expiryDate: {
+                    [Sequelize.Op.lt]: new Date()
+                },
+                status: {
+                    [Sequelize.Op.ne]: "PickedUp"
+                }
+            }
+        });
+    }catch(error){
+        console.log(error.message);
+    }
+};
+
+
+
+export const addNewItem = async (req, res) => {
+    try{
+        if (!req.body.userId) {
+            res.status(400).json({
+                message: "User ID is required"
+            });
+            return;
+        }
+
+        if (!req.body.trashType) {
+            res.status(400).json({
+                message: "Trash Type is required"
+            });
+            return;
+        }
+
+        let data = req.body;
+
+        if (!['Food', 'Makanan'].includes(req.body.trashType)) {
+            console.log("kok bisa")
+            data.expiryDate = null;
+        }
+
+        const response = await MyItems.create(data);
+        await updateItemStatus();
+
         res.status(201).json({
-            message: "Food added"
+            message: "Item added"
         });
 
     }catch(error){
@@ -40,13 +128,23 @@ export const addNewFood = async (req, res) => {
     }
 }
 
-export const getFoodStock = async (req, res) => {
+
+
+export const getItemStock = async (req, res) => {
     try{
-        const foodStatus = ['Good', 'Expired', 'PickedUp'] 
+        await updateItemStatus();
+        if (!req.params.userId) {
+            res.status(400).json({
+                message: "User ID is required"
+            });
+            return;
+        }
+        const itemStatus = ['Good', 'Expired', 'PickedUp'] 
         if(req.query.status){
-            if (foodStatus.includes(req.query.status)){
-                const response = await Food.findAll({
+            if (itemStatus.includes(req.query.status)){
+                const response = await MyItems.findAll({
                     where: {
+                        userId: req.params.userId,
                         status: req.query.status
                     }
                 });
@@ -54,15 +152,22 @@ export const getFoodStock = async (req, res) => {
                 return;
             }
             if (req.query.status === 'All'){
-                const response = await Food.findAll();
+                const response = await MyItems.findAll(
+                    {
+                        where: {
+                            userId: req.params.userId
+                        }
+                    }
+                );
                 res.status(200).json(response);
                 return;
             }
         }
-        const response = await Food.findAll({
+        const response = await MyItems.findAll({
             where: {
+                userId: req.params.userId,
                 status: {
-                    [Sequelize.Op.or]: [foodStatus[0], foodStatus[1]]
+                    [Sequelize.Op.or]: [itemStatus[0], itemStatus[1]]
                 }
             }
         });
@@ -76,22 +181,38 @@ export const getFoodStock = async (req, res) => {
 };
 
 
-export const createFoodWastePickup = async (req, res) => {
+export const createItemWastePickup = async (req, res) => {
     try {
-        if(!req.body.fid){
+        await updateItemStatus();
+
+        if(!req.body.itemId){
             res.status(400).json({
-                message: "Food Stock ID is required"
+                message: "Item Stock ID is required"
             });
             return;
         }
 
-        const response = await Pickup.create(req.body);
+        const data = await MyItems.findOne({
+            where: {
+                id: req.body.itemId
+            }
+        });
+
+        let finalData = {};
+        finalData.userId = data.userId;
+        finalData.status = "Available";
+        finalData.location = req.body.location;
+        finalData.trashDetail = data.trashDetail;
+        finalData.trashType = data.trashType;
+        finalData.qty = data.qty;
+
+        const response = await Pickup.create(finalData);
         
-        Food.update({
+        await MyItems.update({
             status: 'PickedUp'
         },{
             where: {
-                id: req.body.fid
+                id: req.body.itemId
             }
         });
 
@@ -110,8 +231,8 @@ export const createFoodWastePickup = async (req, res) => {
 
 export const getRecommendation = async (req, res) => {
     try {
-
-        if (!req.query.id) {
+        await updateItemStatus();
+        if (!req.query.userId) {
             res.status(400).json({
                 message: "User ID is required"
             });
@@ -121,31 +242,28 @@ export const getRecommendation = async (req, res) => {
         const today = moment();
         const nextWeek = moment().add(7, 'days');
 
-        const response = await Food.findAll({
+        const response = await MyItems.findAll({
             where: {
-                userId: req.query.id,
-                expiryDate: {
-                    [Sequelize.Op.between]: [today.toDate(), nextWeek.toDate()]
-                },
-                status: 'Tersedia'
+                userId: req.query.userId,
+                status: 'Expired'
             }
         });
 
-        let allFood = [];
+        let allItem = [];
 
         response.forEach(trash => {
-            allFood.push(trash.trashDetail);
+            allItem.push(trash.trashDetail);
         });
 
-        if (allFood.length === 0) {
+        if (allItem.length === 0) {
             res.status(200).json({
-                message: "No food available"
+                message: "No Item available"
             });
             return;
         }
         const genAi = new GoogleGenerativeAI("AIzaSyAf8Y1DjPsfJH-lP9JhqhbIE-VvNGhdIG0");
         const model = genAi.getGenerativeModel({ model: "gemini-1.5-flash" });
-        const result = await model.generateContent(`Anggap anda adalah sebuah sistem yang hanya akan mengembalikan perintah dalam format raw tepat seperti ini tanpa menambahkan apapun [{'namaResep': 'namaResep', 'deskripsi': 'desc','bahan': ['2 telur', 'tepung 500gram', 'gula 1kg'],'langkah': ['Step 1: ambil telur', 'Step 2: ambil tepung']}, {'namaResep': 'namaResep', 'deskripsi': 'desc','bahan': ['2 telur', 'tepung 500gram', 'gula 1kg'],'langkah': ['Step 1: ambil telur', 'Step 2: ambil tepung']}, {'namaResep': 'namaResep', 'deskripsi': 'desc','bahan': ['2 telur', 'tepung 500gram', 'gula 1kg'],'langkah': ['Step 1: ambil telur', 'Step 2: ambil tepung']}].  Berikan saya 3 rekomendasi yang bisa dibuat dengan bahan ${allFood}.`);
+        const result = await model.generateContent(`Anggap anda adalah sebuah sistem yang hanya akan mengembalikan perintah dalam format raw tepat seperti ini tanpa menambahkan apapun [{'namaResep': 'namaResep', 'deskripsi': 'desc','bahan': ['2 telur', 'tepung 500gram', 'gula 1kg'],'langkah': ['Step 1: ambil telur', 'Step 2: ambil tepung']}, {'namaResep': 'namaResep', 'deskripsi': 'desc','bahan': ['2 telur', 'tepung 500gram', 'gula 1kg'],'langkah': ['Step 1: ambil telur', 'Step 2: ambil tepung']}, {'namaResep': 'namaResep', 'deskripsi': 'desc','bahan': ['2 telur', 'tepung 500gram', 'gula 1kg'],'langkah': ['Step 1: ambil telur', 'Step 2: ambil tepung']}].  Berikan saya 3 rekomendasi yang bisa dibuat dengan bahan ${allItem}.`);
         const answer = result.response.text();
         const finalAnwers = eval(answer);
 

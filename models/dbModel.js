@@ -49,6 +49,18 @@ export const Food = db.define(foodRecord, {
 });
 
 
+const myItems = "myItems";
+export const MyItems = db.define(myItems, {
+    userId: DataTypes.STRING,
+    trashDetail: DataTypes.STRING,
+    trashType: DataTypes.STRING,
+    expiryDate: DataTypes.DATE,
+    qty: DataTypes.INTEGER,
+    status: DataTypes.STRING
+},{
+    freezeTableName: true
+});
+
 
 // Create & run a function to create the table in the database
 // if it does not exist

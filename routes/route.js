@@ -7,7 +7,7 @@ import {
     getUserHistory
 } from "../controllers/pickupController.js";
 import { insertNewUser, authenticateUser } from "../controllers/authController.js";
-import { updateUserSetting, addNewFood, getFoodStock, createFoodWastePickup, getRecommendation } from "../controllers/userController.js";
+import { getUserProfile, updateUserSetting, addNewItem, getItemStock, createItemWastePickup, getRecommendation } from "../controllers/userController.js";
 
 const router = express.Router();
 
@@ -26,11 +26,12 @@ router.post("/register", insertNewUser); // User, Admin
 router.post("/login", authenticateUser); // User, Admin, Driver
 router.get("/history", getUserHistory); // User
 
-router.put("/updatesetting/", updateUserSetting); // User
-router.post("/addfood", addNewFood); // User
-router.get("/foodstock", getFoodStock); // User, Admin
-router.post("/foodpickup", createFoodWastePickup); // User
+router.get("/myprofile/:userId", getUserProfile) // User
+router.put("/myprofile/update", updateUserSetting); // User
+router.post("/myitem/add", addNewItem); // User
+router.get("/myitem/:userId", getItemStock); // User, Admin
+router.post("/myitem/createpickup", createItemWastePickup); // User
 
-router.get("/recommendation", getRecommendation); // User
+router.get("/myitem/recommendation", getRecommendation); // User
 
 export default router;

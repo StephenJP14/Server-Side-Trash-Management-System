@@ -2,6 +2,7 @@
 /node_modules
 /request.rest
 /request_copy.rest
+/final.rest
 /test.py
 /trash_data.csv
 /test.html
