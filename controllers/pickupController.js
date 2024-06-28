@@ -5,27 +5,59 @@ import { Sequelize } from "sequelize";
 export const getPickup = async (req, res) => {
     try {
         if (!req.query.id) {
-            if(req.query.status){
-                const response = await Pickup.findAll({
-                    where: {
-                        status: req.query.status
+            if (req.query.userId) {
+                if(req.query.status){
+                    const response = await Pickup.findAll({
+                        where: {
+                            status: req.query.status,
+                            userId: req.query.userId
+                        }
+                    });
+                    let data = {
+                        qty: response.qty,
+                        trashDetail: response.trashDetail,
+                        trashType: response.trashType,
+                        userId: response.userId,
+                        location: response.location,
+                        locationLabel: response.locationLabel,
+                        status: response.status
                     }
-                });
-                let data = {
-                    qty: response.qty,
-                    trashDetail: response.trashDetail,
-                    trashType: response.trashType,
-                    userId: response.userId,
-                    location: response.location,
-                    locationLabel: response.locationLabel,
-                    status: response.status
+                    res.status(200).json(response);
                 }
-                res.status(200).json(response);
+                else{
+                    const response = await Pickup.findAll({
+                        where: {
+                            userId: req.query.userId
+                        }
+                    
+                    });
+                    res.status(200).json(response);
+                }
+            } else{
+                if(req.query.status){
+                    const response = await Pickup.findAll({
+                        where: {
+                            status: req.query.status
+                        }
+                    });
+                    let data = {
+                        qty: response.qty,
+                        trashDetail: response.trashDetail,
+                        trashType: response.trashType,
+                        userId: response.userId,
+                        location: response.location,
+                        locationLabel: response.locationLabel,
+                        status: response.status
+                    }
+                    res.status(200).json(response);
+                }
+                else{
+                    const response = await Pickup.findAll();
+                    res.status(200).json(response);
+                }
             }
-            else{
-                const response = await Pickup.findAll();
-                res.status(200).json(response);
-            }
+
+
         } else {
             const response = await Pickup.findOne({
                 where: {
