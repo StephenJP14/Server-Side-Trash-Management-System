@@ -11,6 +11,7 @@ export const Pickup = db.define(pickup_name, {
     trashType: DataTypes.STRING,
     userId: DataTypes.STRING,
     location: DataTypes.JSON,
+    locationLabel: DataTypes.STRING,
     status: DataTypes.STRING
 },{
     freezeTableName: true
@@ -30,20 +31,11 @@ const trashRecord = "trashStock";
 export const Trash = db.define(trashRecord, {
     trashDetail: DataTypes.STRING,
     trashType: DataTypes.STRING,
-    trashPrice: DataTypes.INTEGER,
+    trashPrice: {
+        type: DataTypes.INTEGER,
+        defaultValue: 5
+    },
     qty: DataTypes.INTEGER
-},{
-    freezeTableName: true
-});
-
-const foodRecord = "foodStock";
-export const Food = db.define(foodRecord, {
-    userId: DataTypes.STRING,
-    trashDetail: DataTypes.STRING,
-    trashType: DataTypes.STRING,
-    expiryDate: DataTypes.DATE,
-    qty: DataTypes.INTEGER,
-    status: DataTypes.STRING
 },{
     freezeTableName: true
 });

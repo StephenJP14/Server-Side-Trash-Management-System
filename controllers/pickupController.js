@@ -11,6 +11,15 @@ export const getPickup = async (req, res) => {
                         status: req.query.status
                     }
                 });
+                let data = {
+                    qty: response.qty,
+                    trashDetail: response.trashDetail,
+                    trashType: response.trashType,
+                    userId: response.userId,
+                    location: response.location,
+                    locationLabel: response.locationLabel,
+                    status: response.status
+                }
                 res.status(200).json(response);
             }
             else{

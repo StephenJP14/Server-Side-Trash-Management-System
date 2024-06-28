@@ -202,6 +202,7 @@ export const createItemWastePickup = async (req, res) => {
         finalData.userId = data.userId;
         finalData.status = "Available";
         finalData.location = req.body.location;
+        finalData.locationLabel = req.body.locationLabel
         finalData.trashDetail = data.trashDetail;
         finalData.trashType = data.trashType;
         finalData.qty = data.qty;

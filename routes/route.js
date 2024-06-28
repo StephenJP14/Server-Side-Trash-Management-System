@@ -6,7 +6,8 @@ import {
     getTrashStock,
     getUserHistory
 } from "../controllers/pickupController.js";
-import { insertNewUser, authenticateUser, registerDriver } from "../controllers/authController.js";
+import { insertNewUser, authenticateUser } from "../controllers/authController.js";
+import { registerDriver } from "../controllers/adminController.js";
 import { getUserProfile, updateUserSetting, addNewItem, getItemStock, createItemWastePickup, getRecommendation } from "../controllers/userController.js";
 
 const router = express.Router();
