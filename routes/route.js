@@ -6,7 +6,7 @@ import {
     getTrashStock,
     getUserHistory
 } from "../controllers/pickupController.js";
-import { insertNewUser, authenticateUser } from "../controllers/authController.js";
+import { insertNewUser, authenticateUser, registerDriver } from "../controllers/authController.js";
 import { getUserProfile, updateUserSetting, addNewItem, getItemStock, createItemWastePickup, getRecommendation } from "../controllers/userController.js";
 
 const router = express.Router();
@@ -24,6 +24,7 @@ router.get("/trashstock", getTrashStock); // Admin
 // Route for the user requests
 router.post("/register", insertNewUser); // User, Admin
 router.post("/login", authenticateUser); // User, Admin, Driver
+router.post("/register/driver", registerDriver); // Admin
 router.get("/history", getUserHistory); // User
 
 router.get("/myprofile/:userId", getUserProfile) // User
