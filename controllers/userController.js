@@ -262,7 +262,7 @@ export const getRecommendation = async (req, res) => {
             });
             return;
         }
-        const genAi = new GoogleGenerativeAI("AIzaSyAf8Y1DjPsfJH-lP9JhqhbIE-VvNGhdIG0");
+        const genAi = new GoogleGenerativeAI("API_KEY");
         const model = genAi.getGenerativeModel({ model: "gemini-1.5-flash" });
         const result = await model.generateContent(`Anggap anda adalah sebuah sistem yang hanya akan mengembalikan perintah dalam format raw tepat seperti ini tanpa menambahkan apapun [{'namaResep': 'namaResep', 'deskripsi': 'desc','bahan': ['2 telur', 'tepung 500gram', 'gula 1kg'],'langkah': ['Step 1: ambil telur', 'Step 2: ambil tepung']}, {'namaResep': 'namaResep', 'deskripsi': 'desc','bahan': ['2 telur', 'tepung 500gram', 'gula 1kg'],'langkah': ['Step 1: ambil telur', 'Step 2: ambil tepung']}, {'namaResep': 'namaResep', 'deskripsi': 'desc','bahan': ['2 telur', 'tepung 500gram', 'gula 1kg'],'langkah': ['Step 1: ambil telur', 'Step 2: ambil tepung']}].  Berikan saya 3 rekomendasi yang bisa dibuat dengan bahan ${allItem}.`);
         const answer = result.response.text();
